@@ -14,7 +14,8 @@ Pod::Spec.new do |s|
 
   s.source       = { :git => "https://github.com/ctprojects/react-native-scanner-zebra.git", :tag => "v#{s.version}" }
   s.source_files  = "ios/**/*.{h,m,swift}"
-  s.ios.vendored_library = 'ios/libs/libsymbolbt-sdk.a'
+  s.ios.vendored_library = 'ios/libs/libZebraSdk.a'
+  s.ios.framework = 'ExternalAccessory', 'CoreBluetooth'
 
   s.dependency 'React'
 end

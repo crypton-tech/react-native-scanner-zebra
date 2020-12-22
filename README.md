@@ -20,9 +20,6 @@
   |com.motorolasolutions.CS4070_ssi|CS4070|
   |com.zebra.scanner.SSI|RFD8500|
   |com.motorolasolutions.scanner|RFD8500|
-* Select your Target, and then its Build Phases tab. Expand the Link Binary With Libraries item. Add the following frameworks by clicking the + button:
- 1. ExternalAccessory
- 2. CoreBluetooth
 
 ## Usage
 ```javascript
