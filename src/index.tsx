@@ -30,13 +30,22 @@ const supportedEvents = [
   'scanner-disconnected',
 ]
 
+const setEnabled = (isEnabled: boolean) => {
+  NativeModules.ZebraScanner.setEnabled(isEnabled)
+}
+
+const getActiveScanners = (callback: CallbackScanners) => {
+  NativeModules.ZebraScanner.getActiveScanners((scanners: Scanner[]) => {
+    callback(scanners)
+  })
+}
+
 const useZebraScanner = (
   onScan: EventBarcodeHandler,
   onEvent: EventHandler | undefined
 ) => {
   useLayoutEffect(() => {
     const handleEvent = (data: EventBarcode) => {
-      console.log('Event: Barcode', data)
       if (onScan) {
         onScan(data.barcode || '', data.id)
       }
@@ -49,7 +58,6 @@ const useZebraScanner = (
       supportedEvents.forEach((event: string) => {
         listeners.push(
           RNZebraScanner.addListener(event, (data) => {
-            console.log('Event:', event, data)
             onEvent(event, data.id || '')
           })
         )
@@ -62,16 +70,6 @@ const useZebraScanner = (
       })
     }
   })
-
-  const setEnabled = (isEnabled: boolean) => {
-    NativeModules.ZebraScanner.setEnabled(isEnabled)
-  }
-
-  const getActiveScanners = (callback: CallbackScanners) => {
-    NativeModules.ZebraScanner.getActiveScanners((scanners: Scanner[]) => {
-      callback(scanners)
-    })
-  }
 
   return {
     setEnabled,
