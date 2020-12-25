@@ -1,3 +1,10 @@
 rootProject.name = 'example'
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
+
+include ':BarcodeScannerLibrary'
+project(':BarcodeScannerLibrary').projectDir = new File(rootProject.projectDir, '../../android/BarcodeScannerLibrary')
+
+include ':react-native-scanner-zebra'
+project(':react-native-scanner-zebra').projectDir = new File(rootProject.projectDir, '../../android')
+
 include ':app'

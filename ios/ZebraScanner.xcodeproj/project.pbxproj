@@ -9,8 +9,8 @@
 /* Begin PBXBuildFile section */
 		A1029717259124C200CD3854 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1029716259124C200CD3854 /* CoreBluetooth.framework */; };
 		A1029719259124D000CD3854 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1029718259124D000CD3854 /* ExternalAccessory.framework */; };
-		A102971B259124E300CD3854 /* libsymbolbt-sdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A102971A259124E300CD3854 /* libsymbolbt-sdk.a */; };
 		A1AB4D5625912119002891C0 /* ZebraScannerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1AB4D5525912119002891C0 /* ZebraScannerManager.swift */; };
+		A1BCA8192593C1D000288DF3 /* libZebraSdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A1BCA8182593C1D000288DF3 /* libZebraSdk.a */; };
 		FA4F9FE82512AA42002DB4D5 /* ZebraScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4F9FE72512AA42002DB4D5 /* ZebraScanner.swift */; };
 		FA4F9FEB2512ACC2002DB4D5 /* ZebraScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4F9FEA2512ACC2002DB4D5 /* ZebraScanner.m */; };
 /* End PBXBuildFile section */
@@ -30,9 +30,9 @@
 /* Begin PBXFileReference section */
 		A1029716259124C200CD3854 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.0.sdk/System/Library/Frameworks/CoreBluetooth.framework; sourceTree = DEVELOPER_DIR; };
 		A1029718259124D000CD3854 /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.0.sdk/System/Library/Frameworks/ExternalAccessory.framework; sourceTree = DEVELOPER_DIR; };
-		A102971A259124E300CD3854 /* libsymbolbt-sdk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libsymbolbt-sdk.a"; path = "libs/libsymbolbt-sdk.a"; sourceTree = "<group>"; };
 		A1AB4D5525912119002891C0 /* ZebraScannerManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZebraScannerManager.swift; sourceTree = "<group>"; };
 		A1AB4D5825912130002891C0 /* include */ = {isa = PBXFileReference; lastKnownFileType = folder; path = include; sourceTree = "<group>"; };
+		A1BCA8182593C1D000288DF3 /* libZebraSdk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libZebraSdk.a; path = libs/libZebraSdk.a; sourceTree = "<group>"; };
 		FA0EFF60236CC8FB00069FA8 /* libZebraScanner.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libZebraScanner.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA4F9FE62512AA41002DB4D5 /* ZebraScanner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ZebraScanner-Bridging-Header.h"; sourceTree = "<group>"; };
 		FA4F9FE72512AA42002DB4D5 /* ZebraScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZebraScanner.swift; sourceTree = "<group>"; };
@@ -44,9 +44,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A1029717259124C200CD3854 /* CoreBluetooth.framework in Frameworks */,
 				A1029719259124D000CD3854 /* ExternalAccessory.framework in Frameworks */,
-				A102971B259124E300CD3854 /* libsymbolbt-sdk.a in Frameworks */,
+				A1029717259124C200CD3854 /* CoreBluetooth.framework in Frameworks */,
+				A1BCA8192593C1D000288DF3 /* libZebraSdk.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -56,7 +56,7 @@
 		A1029715259124C200CD3854 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				A102971A259124E300CD3854 /* libsymbolbt-sdk.a */,
+				A1BCA8182593C1D000288DF3 /* libZebraSdk.a */,
 				A1029718259124D000CD3854 /* ExternalAccessory.framework */,
 				A1029716259124C200CD3854 /* CoreBluetooth.framework */,
 			);

@@ -1,6 +1,7 @@
 package nl.crypton.zebrascanner;
 
-import com.facebook.react.bridge.JavaOnlyMap;
+import android.util.Log;
+
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
@@ -11,9 +12,33 @@ import com.zebra.scannercontrol.FirmwareUpdateEvent;
 import com.zebra.scannercontrol.IDcsSdkApiDelegate;
 import com.zebra.scannercontrol.SDKHandler;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+
+class Scanner {
+    private int scannerId;
+    private String name;
+
+    public Scanner(int scannerId, String name) {
+        this.scannerId = scannerId;
+        this.name = name;
+    }
+
+    public int getScannerId() {
+        return scannerId;
+    }
+
+    public String getName() {
+        return name;
+    }
+}
+
 public class ZebraScannerManager implements IDcsSdkApiDelegate {
     private SDKHandler sdkHandler;
     private ReactApplicationContext reactContext;
+    private List<nl.crypton.zebrascanner.Scanner> activeScanners = new ArrayList<>();
+    private static final String TAG = "ZebraScannerManager";
 
     public ZebraScannerManager(ReactApplicationContext reactContext) {
         this.reactContext = reactContext;
@@ -21,6 +46,17 @@ public class ZebraScannerManager implements IDcsSdkApiDelegate {
         sdkHandler.dcssdkSetDelegate(this);
 
         this.setupApi();
+    }
+
+    // Public Functions
+    public void setEnabled(boolean isEnabled) {
+        for (Scanner item: activeScanners) {
+            enableScanner(item.getScannerId(), isEnabled);
+        }
+    }
+
+    public List<Scanner> getActiveScanners() {
+        return activeScanners;
     }
 
     // Private Functions
@@ -37,36 +73,94 @@ public class ZebraScannerManager implements IDcsSdkApiDelegate {
         // We would like to subscribe to all barcode events
         notifyMask |= DCSSDKDefs.DCSSDK_EVENT.DCSSDK_EVENT_BARCODE.value;
 
-        sdkHandler.dcssdkSetOperationalMode(DCSSDKDefs.DCSSDK_MODE.DCSSDK_OPMODE_BT_NORMAL);
+        try {
+            sdkHandler.dcssdkSetOperationalMode(DCSSDKDefs.DCSSDK_MODE.DCSSDK_OPMODE_BT_NORMAL);
 
-        // enable scanner detection
-        sdkHandler.dcssdkEnableAvailableScannersDetection(true);
+            // Enable scanner detection
+            sdkHandler.dcssdkEnableAvailableScannersDetection(true);
 
-        sdkHandler.dcssdkSubsribeForEvents(notifyMask);
+            sdkHandler.dcssdkSubsribeForEvents(notifyMask);
+
+            // Get list of active scanners
+            List<DCSScannerInfo> scanners = sdkHandler.dcssdkGetActiveScannersList();
+            for (DCSScannerInfo scanner: scanners) {
+                addScanner(scanner.getScannerID(), scanner.getScannerName());
+            }
+
+        } catch (Exception e) {
+            Log.e(TAG, "Exception in setupApi", e);
+        }
     }
 
     private void sendEvent(String eventName,
                            WritableMap params) {
-        this.reactContext
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit(eventName, params);
+        try {
+            this.reactContext
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                    .emit(eventName, params);
+        } catch (Exception e) {
+            Log.e(TAG, "Exception in sendEvent", e);
+        }
     }
 
     private void sendEvent(String eventName, int scannerId) {
         WritableMap params = new WritableNativeMap();
         params.putInt("id", scannerId);
 
-        sendEvent("scanner-barcode", params);
+        sendEvent(eventName, params);
+    }
+
+    private void enableScanner(int scannerId, boolean isEnabled) {
+        StringBuilder outXML = new StringBuilder();
+        DCSSDKDefs.DCSSDK_COMMAND_OPCODE opCode
+                = DCSSDKDefs.DCSSDK_COMMAND_OPCODE.DCSSDK_DEVICE_SCAN_DISABLE;
+        if (isEnabled) {
+            opCode = DCSSDKDefs.DCSSDK_COMMAND_OPCODE.DCSSDK_DEVICE_SCAN_ENABLE;
+        }
+
+        String inXml = "<inArgs><scannerID>" + scannerId + "</scannerID></inArgs>";
+        sdkHandler.dcssdkExecuteCommandOpCodeInXMLForScanner(opCode, inXml, outXML, scannerId);
+    }
+
+    private void addScanner(int scannerId, String name) {
+        Scanner scanner = null;
+        for (Scanner item: activeScanners) {
+            if (item.getScannerId() == scannerId) {
+                scanner = item;
+                break;
+            }
+        }
+
+        if (scanner == null) {
+            activeScanners.add(new Scanner(scannerId, name));
+        }
+    }
+
+    private void removeScanner(int scannerId) {
+        Scanner scanner = null;
+        for (Scanner item: activeScanners) {
+            if (item.getScannerId() == scannerId) {
+                scanner = item;
+                break;
+            }
+        }
+        if (scanner != null) {
+            activeScanners.remove(scanner);
+        }
     }
 
     // Scanner SDK Delegate Methods
     @Override
     public void dcssdkEventScannerAppeared(DCSScannerInfo dcsScannerInfo) {
+        addScanner(dcsScannerInfo.getScannerID(), dcsScannerInfo.getScannerName());
+        sdkHandler.dcssdkEstablishCommunicationSession(dcsScannerInfo.getScannerID());
+
         sendEvent("scanner-appeared", dcsScannerInfo.getScannerID());
     }
 
     @Override
     public void dcssdkEventScannerDisappeared(int scannerId) {
+        removeScanner(scannerId);
         sendEvent("scanner-disappeared", scannerId);
     }
 

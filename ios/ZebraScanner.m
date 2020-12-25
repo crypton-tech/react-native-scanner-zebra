@@ -9,4 +9,6 @@
 #import <React/RCTEventEmitter.h>
 
 @interface RCT_EXTERN_MODULE(ZebraScanner, RCTEventEmitter)
+    RCT_EXTERN_METHOD(setEnabled: (BOOL) isEnabled)
+    RCT_EXTERN_METHOD(getActiveScanners: (RCTResponseSenderBlock) callback)
 @end

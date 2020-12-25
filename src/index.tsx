@@ -1,7 +1,12 @@
 import { useLayoutEffect } from 'react'
-import { NativeEventEmitter, NativeModules } from 'react-native'
+import {
+  EventSubscription,
+  NativeEventEmitter,
+  NativeModules,
+} from 'react-native'
 
-const RNZebraScanner = new NativeEventEmitter(NativeModules.ZebraScanner)
+const { ZebraScanner } = NativeModules
+const RNZebraScanner = new NativeEventEmitter(ZebraScanner)
 
 type EventBarcode = {
   id: string
@@ -9,21 +14,69 @@ type EventBarcode = {
   type: string
 }
 
-type EventBarcodeHandler = (barcode: string, scannerId: string) => void
+type Scanner = {
+  id: number
+  name: string
+}
 
-const useZebraScanner = (onScan: EventBarcodeHandler) => {
+type CallbackScanners = (scanners: Scanner[]) => void
+type EventBarcodeHandler = (barcode: string, scannerId: string) => void
+type EventHandler = (event: string, scannerId: string) => void
+
+const supportedEvents = [
+  'scanner-appeared',
+  'scanner-disappeared',
+  'scanner-connected',
+  'scanner-disconnected',
+]
+
+const useZebraScanner = (
+  onScan: EventBarcodeHandler,
+  onEvent: EventHandler | undefined
+) => {
   useLayoutEffect(() => {
     const handleEvent = (data: EventBarcode) => {
+      console.log('Event: Barcode', data)
       if (onScan) {
         onScan(data.barcode || '', data.id)
       }
     }
 
-    const listener = RNZebraScanner.addListener('scanner-barcode', handleEvent)
+    const listeners: EventSubscription[] = []
+    listeners.push(RNZebraScanner.addListener('scanner-barcode', handleEvent))
+
+    if (onEvent) {
+      supportedEvents.forEach((event: string) => {
+        listeners.push(
+          RNZebraScanner.addListener(event, (data) => {
+            console.log('Event:', event, data)
+            onEvent(event, data.id || '')
+          })
+        )
+      })
+    }
+
     return () => {
-      listener.remove()
+      listeners.forEach((listener) => {
+        listener.remove()
+      })
     }
   })
+
+  const setEnabled = (isEnabled: boolean) => {
+    NativeModules.ZebraScanner.setEnabled(isEnabled)
+  }
+
+  const getActiveScanners = (callback: CallbackScanners) => {
+    NativeModules.ZebraScanner.getActiveScanners((scanners: Scanner[]) => {
+      callback(scanners)
+    })
+  }
+
+  return {
+    setEnabled,
+    getActiveScanners,
+  }
 }
 
 export default useZebraScanner

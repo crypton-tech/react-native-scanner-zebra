@@ -10,7 +10,6 @@
 
 `$ react-native link react-native-scanner-zebra`
 
-
 ### Additions steps for IOS Application
 
 * Configure the Xcode project to support one or more external accessory communication protocols through the UISupportedExternalAccessoryProtocols key in your application Info.plist file or via the Info tab of your project settings.
@@ -21,14 +20,24 @@
   |com.zebra.scanner.SSI|RFD8500|
   |com.motorolasolutions.scanner|RFD8500|
 
+## Methods:
+* **setEnabled(isEnabled)**: Enable or disable active scanners
+* **getActiveScanners(callback)**: Returns the list of active scanners in callback function
+
 ## Usage
 ```javascript
 import useZebraScanner from 'react-native-scanner-zebra';
 
+// Called when barcode is scanned
 const onScan = useCallback((barcode, scannerId) => {
 	// Handle the barcode
 }, []);
 
-useZebraScanner(onScan);
+// Called when scanner event occurred
+const onEvent = useCallback((event, scannerId) => {
+	// Handle the event
+}, []);
+
+const { setEnabled, getActiveScanners } = useZebraScanner(onScan, onEvent);
 
 ```

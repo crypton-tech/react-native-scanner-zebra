@@ -8,10 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		A102974B259125B300CD3854 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1029749259125B300CD3854 /* CoreBluetooth.framework */; };
-		A102974D259125BA00CD3854 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A102974C259125BA00CD3854 /* ExternalAccessory.framework */; };
+		A1BCA8172593C16500288DF3 /* libZebraScanner.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0EFF71236CCB5C00069FA8 /* libZebraScanner.a */; };
+		A1BCA8442593C2AA00288DF3 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1029749259125B300CD3854 /* CoreBluetooth.framework */; };
+		A1BCA8452593C2B200288DF3 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A102974C259125BA00CD3854 /* ExternalAccessory.framework */; };
 		AD7F6F5E51A4583A329C159C /* libPods-example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F9830928ACC38C373A5553B3 /* libPods-example.a */; };
-		FA0EFF72236CCB6600069FA8 /* libZebraScanner.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0EFF71236CCB5C00069FA8 /* libZebraScanner.a */; };
 		FA4A9D282369C1DB0065E0DD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4A9D272369C1DB0065E0DD /* AppDelegate.swift */; };
 		FA4A9D2B2369C4B80065E0DD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA4A9D2A2369C4B80065E0DD /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
@@ -48,10 +48,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A102974D259125BA00CD3854 /* ExternalAccessory.framework in Frameworks */,
-				A102974B259125B300CD3854 /* CoreBluetooth.framework in Frameworks */,
+				A1BCA8452593C2B200288DF3 /* ExternalAccessory.framework in Frameworks */,
+				A1BCA8442593C2AA00288DF3 /* CoreBluetooth.framework in Frameworks */,
 				AD7F6F5E51A4583A329C159C /* libPods-example.a in Frameworks */,
-				FA0EFF72236CCB6600069FA8 /* libZebraScanner.a in Frameworks */,
+				A1BCA8172593C16500288DF3 /* libZebraScanner.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -163,7 +163,6 @@
 				ORGANIZATIONNAME = Facebook;
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = Z94A8V2FR2;
 						LastSwiftMigration = 1110;
 					};
 				};
@@ -310,7 +309,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = Z94A8V2FR2;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -345,6 +344,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "example/example-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -356,7 +356,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = Z94A8V2FR2;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -390,6 +390,7 @@
 				PRODUCT_NAME = example;
 				SWIFT_OBJC_BRIDGING_HEADER = "example/example-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

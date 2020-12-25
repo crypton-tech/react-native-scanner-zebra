@@ -4,6 +4,12 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.WritableArray;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.WritableNativeArray;
+import com.facebook.react.bridge.WritableNativeMap;
+
+import java.util.List;
 
 public class ZebraScannerModule extends ReactContextBaseJavaModule {
 
@@ -22,8 +28,22 @@ public class ZebraScannerModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void sampleMethod(String stringArgument, int numberArgument, Callback callback) {
-        // TODO: Implement some actually useful functionality
-        callback.invoke("Received numberArgument: " + numberArgument + " stringArgument: " + stringArgument);
+    public void setEnabled(boolean isEnabled) {
+        this.scannerManager.setEnabled(isEnabled);
+    }
+
+    @ReactMethod
+    public void getActiveScanners(Callback callback) {
+        List<Scanner> scanners = scannerManager.getActiveScanners();
+        WritableArray writableScanners = new WritableNativeArray();
+
+        for (Scanner item: scanners) {
+            WritableMap scannerMap = new WritableNativeMap();
+            writableScanners.pushMap(scannerMap);
+            scannerMap.putInt("id", item.getScannerId());
+            scannerMap.putString("name", item.getName());
+        }
+
+        callback.invoke(writableScanners);
     }
 }

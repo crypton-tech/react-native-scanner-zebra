@@ -49,8 +49,9 @@ class ZebraScannerManager: NSObject, ISbtSdkApiDelegate {
     func getActiveScanners() -> [NSDictionary] {
         var scanners: [NSDictionary] = []
         for item in availableScanners {
-            var scannerDict: [Int32: String] = [:]
-            scannerDict[item.scannerId] = item.name
+            var scannerDict: [String: Any] = [:]
+            scannerDict["id"] = item.scannerId
+            scannerDict["name"] = item.name
             scanners.append(scannerDict as NSDictionary)
         }
 
@@ -68,6 +69,12 @@ class ZebraScannerManager: NSObject, ISbtSdkApiDelegate {
         ]
     }
 
+    func setEnabled(_ isEnabled: Bool) {
+        for item in availableScanners {
+            enableScanner(item.scannerId, isEnabled: isEnabled)
+        }
+    }
+
     func addListener(_ listener: ScannerEventListener) {
         // if listeners.compactMap({ $0.value }).contains(listener) { return }
         listeners.append(WeakReference(value: listener))
@@ -80,10 +87,22 @@ class ZebraScannerManager: NSObject, ISbtSdkApiDelegate {
                                                     SBT_EVENT_SCANNER_DISAPPEARANCE | SBT_EVENT_SESSION_ESTABLISHMENT |
                                                     SBT_EVENT_SESSION_TERMINATION | SBT_EVENT_BARCODE))
         apiInstance.sbtEnableAvailableScannersDetection(true)
+        
+        var scanners = NSMutableArray()
+        let scannerPointer = AutoreleasingUnsafeMutablePointer<NSMutableArray?>.init(&scanners)
+        apiInstance.sbtGetActiveScannersList(scannerPointer)
+        
+        for item in scanners {
+            let scanner = item as! SbtScannerInfo
+            addAvailableScanner(scanner.getScannerID(), name: scanner.getScannerName())
+        }
     }
 
     fileprivate func addAvailableScanner(_ scannerId: Int32, name: String) {
+        self.removeAvailableScanner(scannerId)
         self.availableScanners.append(Scanner(scannerId: scannerId, name: name))
+        
+        print("Scanner Found", scannerId, name)
     }
 
     fileprivate func removeAvailableScanner(_ scannerId: Int32) {
@@ -135,7 +154,7 @@ class ZebraScannerManager: NSObject, ISbtSdkApiDelegate {
         }
     }
 
-    fileprivate func disabbleScanningCapability(_ scannerId: Int32) {
+    fileprivate func disableScanningCapability(_ scannerId: Int32) {
         let xml = String(format: "<inArgs><scannerID>%d</scannerID></inArgs>", scannerId)
         let result = apiInstance.sbtExecuteCommand(Int32(SBT_DEVICE_SCAN_DISABLE), aInXML: xml,
                                                    aOutXML: nil, forScanner: scannerId)
@@ -143,6 +162,18 @@ class ZebraScannerManager: NSObject, ISbtSdkApiDelegate {
             print("Scanner disabled for scanning")
         } else {
             print("Failed: Disable scanner for scanning")
+        }
+    }
+
+    fileprivate func enableScanner(_ scannerId: Int32, isEnabled: Bool) {
+        let command: Int32 = isEnabled ? Int32(SBT_DEVICE_PULL_TRIGGER) : Int32(SBT_DEVICE_RELEASE_TRIGGER)
+        let xml = String(format: "<inArgs><scannerID>%d</scannerID></inArgs>", scannerId)
+        let result = apiInstance.sbtExecuteCommand(command, aInXML: xml,
+                                                   aOutXML: nil, forScanner: scannerId)
+        if result == SBT_RESULT_SUCCESS {
+            print(isEnabled ? "Scanner Enabled" : "Scanner Disabled")
+        } else {
+            print(isEnabled ? "Failed: Enable scanner" : "Failed: Disable scanner")
         }
     }
 

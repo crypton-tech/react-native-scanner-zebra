@@ -15,8 +15,15 @@ class ZebraScanner: RCTEventEmitter, ScannerEventListener {
         ZebraScannerManager.instance.addListener(self)
     }
 
-    @objc open func getActiveScanners() -> [NSDictionary] {
-        return ZebraScannerManager.instance.getActiveScanners()
+    @objc(getActiveScanners:)
+    open func getActiveScanners(_ callback: RCTResponseSenderBlock) {
+        let scanners: [NSDictionary] = ZebraScannerManager.instance.getActiveScanners()
+        callback([scanners])
+    }
+
+    @objc(setEnabled:)
+    open func setEnabled(isEnabled: Bool) {
+        ZebraScannerManager.instance.setEnabled(isEnabled)
     }
 
     @objc
